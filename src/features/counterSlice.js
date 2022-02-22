@@ -1,37 +1,46 @@
-import { createSlice, configureStore } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 
-const counterSlice = createSlice({
+const initialState = {
+	value: 0,
+	status: "idle",
+};
+
+export const counterSlice = createSlice({
 	name: "counter",
-	initialState: {
-		value: 0,
-	},
+	initialState,
+	// The `reducers` field lets us define reducers and generate associated actions
 	reducers: {
-		incremented: (state) => {
+		increment: (state) => {
 			// Redux Toolkit allows us to write "mutating" logic in reducers. It
 			// doesn't actually mutate the state because it uses the Immer library,
 			// which detects changes to a "draft state" and produces a brand new
 			// immutable state based off those changes
 			state.value += 1;
 		},
-		decremented: (state) => {
+		decrement: (state) => {
 			state.value -= 1;
+		},
+		// Use the PayloadAction type to declare the contents of `action.payload`
+		incrementByAmount: (state, action) => {
+			state.value += action.payload;
 		},
 	},
 });
 
-export const { incremented, decremented } = counterSlice.actions;
+export const { increment, decrement, incrementByAmount } = counterSlice.actions;
 
-const store = configureStore({
-	reducer: counterSlice.reducer,
-});
+// The function below is called a selector and allows us to select a value from
+// the state. Selectors can also be defined inline where they're used instead of
+// in the slice file. For example: `useSelector((state: RootState) => state.counter.value)`
+export const selectCount = (state) => state.counter.value;
 
-// Can still subscribe to the store
-store.subscribe(() => console.log(store.getState()));
+// We can also write thunks by hand, which may contain both sync and async logic.
+// Here's an example of conditionally dispatching actions based on current state.
+export const incrementIfOdd = (amount) => (dispatch, getState) => {
+	const currentValue = selectCount(getState());
+	if (currentValue % 2 === 1) {
+		dispatch(incrementByAmount(amount));
+	}
+};
 
-// Still pass action objects to `dispatch`, but they're created for us
-store.dispatch(incremented());
-// {value: 1}
-store.dispatch(incremented());
-// {value: 2}
-store.dispatch(decremented());
-// {value: 1}
+export default counterSlice.reducer;
