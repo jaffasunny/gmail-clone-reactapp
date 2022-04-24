@@ -13,8 +13,9 @@ import {
 } from "@mui/icons-material";
 import { Button, IconButton } from "@mui/material";
 import React from "react";
-import "./Sidebar.css";
 import SidebarOption from "./SidebarOption";
+
+import "./Sidebar.css";
 
 const Sidebar = () => {
   return (

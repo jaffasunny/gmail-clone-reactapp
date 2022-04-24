@@ -3,6 +3,8 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import "./App.css";
 import Header from "./Header";
 import Sidebar from "./Sidebar";
+import Mail from "./Mail";
+import EmailList from "./EmailList";
 
 function App() {
   return (
@@ -14,12 +16,8 @@ function App() {
           <Sidebar />
 
           <Routes>
-            <Route path='/mail'>
-              <Mail />
-            </Route>
-            <Route path='/'>
-              <EmailList />
-            </Route>
+            <Route path='/mail' element={<Mail />} />
+            <Route path='/' element={<EmailList />} />
           </Routes>
         </div>
       </div>

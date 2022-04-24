@@ -1,7 +1,11 @@
+.sidebar {
+  padding-inline: 10px;
+  flex: 0.2;
+}
+
 .sidebar__compose {
-  margin-top: 15px !important;
-  margin-left: 10px !important;
-  margin-bottom: 15px !important;
+  margin-block: 15px !important;
+  margin-inline: 10px !important;
 
   text-transform: capitalize !important;
   color: gray !important;
