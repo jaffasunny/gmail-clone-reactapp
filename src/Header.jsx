@@ -8,8 +8,21 @@ import {
   Search,
 } from "@mui/icons-material";
 import { IconButton, Avatar } from "@mui/material";
+import { useDispatch, useSelector } from "react-redux";
+import { logout, selectUser } from "./features/userSlice";
+import { auth } from "./firebase";
+import { signOut } from "firebase/auth";
 
 const Header = () => {
+  const user = useSelector(selectUser);
+  const dispatch = useDispatch();
+
+  const signout = () => {
+    signOut(auth).then(() => {
+      dispatch(logout());
+    });
+  };
+
   return (
     <div className='header'>
       <div className='header__left'>
@@ -35,8 +48,8 @@ const Header = () => {
         <IconButton>
           <Notifications />
         </IconButton>
-        <IconButton>
-          <Avatar />
+        <IconButton onClick={signout}>
+          <Avatar src={user?.photoUrl} />
         </IconButton>
       </div>
     </div>

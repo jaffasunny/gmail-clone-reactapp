@@ -9,13 +9,21 @@ import { useDispatch } from "react-redux";
 
 import "./SendMail.css";
 import { closeSendMessage } from "./features/mailSlice";
+import { db } from "./firebase";
+import { serverTimestamp, addDoc, collection } from "firebase/firestore";
 
 const SendMail = () => {
-  const { register, handleSubmit, watch } = useForm();
+  const { register, handleSubmit } = useForm();
   const dispatch = useDispatch();
 
-  const onSubmit = (data) => {
-    console.log(data);
+  const onSubmit = (formData) => {
+    addDoc(collection(db, "emails"), {
+      to: formData.to,
+      subject: formData.subject,
+      message: formData.message,
+      timestamp: serverTimestamp() || null,
+    });
+    dispatch(closeSendMessage());
   };
 
   return (
@@ -31,7 +39,7 @@ const SendMail = () => {
       <form onSubmit={handleSubmit(onSubmit)}>
         <input
           name='to'
-          type='text'
+          type='email'
           placeholder='To'
           {...register("to")}
           required

@@ -11,13 +11,33 @@ import {
   Settings,
 } from "@mui/icons-material";
 import { Checkbox, IconButton } from "@mui/material";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Section from "./Section";
+import { getDocs, collection, orderBy, query } from "firebase/firestore";
 
 import "./EmailList.css";
 import EmailRow from "./EmailRow";
+import { db } from "./firebase";
 
 const EmailList = () => {
+  const [emails, setEmails] = useState([]);
+
+  useEffect(() => {
+    const getData = async () => {
+      const querySnapshot = await getDocs(
+        query(collection(db, "emails"), orderBy("timestamp", "desc"))
+      );
+      const data = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        data: doc.data(),
+      }));
+      setEmails(data);
+    };
+    getData();
+
+    return () => setEmails([]);
+  }, [emails]);
+
   return (
     <div className='emailList'>
       <div className='emailList__settings'>
@@ -57,18 +77,22 @@ const EmailList = () => {
       </div>
 
       <div className='emailList__List'>
-        <EmailRow
+        {emails.map(({ id, data: { to, subject, message, timestamp } }) => (
+          <EmailRow
+            id={id}
+            key={id}
+            title={to}
+            subject={subject}
+            description={message}
+            time={new Date(timestamp?.seconds * 1000).toUTCString()}
+          />
+        ))}
+        {/* <EmailRow
           title='Twitch'
-          subject='Hey fellow streamer'
+          subject='Hello fellow streamer!!!'
           description='This is a test'
           time='10pm'
-        />
-        <EmailRow
-          title='Twitch'
-          subject='Hey fellow streamer'
-          description='This is a test'
-          time='10pm'
-        />
+        /> */}
       </div>
     </div>
   );
